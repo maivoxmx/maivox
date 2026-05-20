@@ -702,12 +702,54 @@
             background: var(--gray-soft);
         }
 
+        .team-leader-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .team-leader-row .team-card {
+            max-width: 340px;
+            width: 100%;
+            border: 2px solid var(--blue-light);
+            box-shadow: var(--shadow-blue);
+            position: relative;
+        }
+
+        .team-leader-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--gradient-main);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 100px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-sm);
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
             max-width: 1100px;
             margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            }
         }
 
         .team-card {
@@ -1208,13 +1250,17 @@
             <h2 class="section-title fade-in">Equipo InnovaTecNM 2026</h2>
             <p class="section-subtitle fade-in">Estudiantes mexicanos construyendo accesibilidad desde la educación pública.</p>
 
-            <div class="team-grid">
+            <div class="team-leader-row">
                 <div class="team-card fade-in">
+                    <div class="team-leader-badge"><i class="fas fa-star"></i> Líder</div>
                     <div class="team-avatar">EN</div>
                     <div class="team-name">Emiliano Noriega Millán</div>
                     <div class="team-role">Líder de proyecto & Hardware</div>
                     <div class="team-degree"><i class="fas fa-graduation-cap"></i> Ing. en Sistemas Computacionales</div>
                 </div>
+            </div>
+
+            <div class="team-grid">
                 <div class="team-card fade-in">
                     <div class="team-avatar">NH</div>
                     <div class="team-name">Nelly Paola Hernández Alaniz</div>
