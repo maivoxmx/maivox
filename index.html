@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MaiVox - Traductor de Lengua de Señas Mexicana a voz en tiempo real. Tecnología accesible, portátil y sin conexión a internet.">
+    <title>MaiVox · LSM a voz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue-dark: #0D1B2A;
+            --blue-deep: #0A2540;
+            --blue-primary: #1565C0;
+            --blue-light: #42A5F5;
+            --blue-pale: #E3F2FD;
+            --white: #ffffff;
+            --gray-soft: #F8FAFC;
+            --gray-medium: #64748B;
+            --gray-dark: #334155;
+            --gradient-main: linear-gradient(135deg, #1565C0 0%, #42A5F5 100%);
+            --gradient-dark: linear-gradient(135deg, #0D1B2A 0%, #1565C0 100%);
+            --shadow-sm: 0 2px 8px rgba(13, 27, 42, 0.06);
+            --shadow-md: 0 8px 24px rgba(13, 27, 42, 0.08);
+            --shadow-lg: 0 20px 50px rgba(21, 101, 192, 0.15);
+            --shadow-blue: 0 10px 40px rgba(21, 101, 192, 0.25);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--blue-dark);
+            background: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 16px 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(21, 101, 192, 0.08);
+        }
+
+        .navbar.scrolled {
+            padding: 12px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .nav-logo .mai { color: var(--blue-dark); }
+        .nav-logo .vox { color: var(--blue-light); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--blue-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-main);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--blue-dark);
+            cursor: pointer;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 120px 24px 80px;
+            background: linear-gradient(180deg, #F8FBFF 0%, #E3F2FD 100%);
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #42A5F5 0%, transparent 70%);
+            top: -100px;
+            right: -150px;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #1565C0 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -10s;
+        }
+
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #90CAF9 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 900px;
+        }
+
+        .hero-logo {
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            letter-spacing: -3px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .hero-logo .mai { color: var(--blue-dark); }
+        .hero-logo .vox {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-tagline-small {
+            font-size: 1.1rem;
+            color: var(--blue-primary);
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .hero-headline {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--blue-dark);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--gray-medium);
+            margin-bottom: 48px;
+            font-weight: 400;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--white);
+            padding: 14px 24px;
+            border-radius: 100px;
+            box-shadow: var(--shadow-md);
+            font-weight: 600;
+            color: var(--blue-dark);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(21, 101, 192, 0.1);
+        }
+
+        .badge:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-blue);
+        }
+
+        /* ===== SECTIONS GENERAL ===== */
+        section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 800;
+            color: var(--blue-dark);
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: -1px;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray-medium);
+            text-align: center;
+            margin-bottom: 64px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== PROBLEM ===== */
+        .problem {
+            background: var(--gray-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(66, 165, 245, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .problem-highlight {
+            background: var(--gradient-main);
+            color: white;
+            padding: 48px 32px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 64px;
+            box-shadow: var(--shadow-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-highlight::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .problem-highlight .number {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .problem-highlight .text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .problem-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            position: relative;
+        }
+
+        .problem-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: 20px;
+            border-left: 4px solid var(--blue-light);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .problem-card .icon {
+            width: 48px;
+            height: 48px;
+            background: var(--blue-pale);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            color: var(--blue-primary);
+            font-size: 1.25rem;
+        }
+
+        .problem-card p {
+            color: var(--gray-dark);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .how {
+            background: var(--white);
+        }
+
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 64px;
+        }
+
+        .pipeline-step {
+            background: var(--white);
+            padding: 28px 20px;
+            border-radius: 20px;
+            text-align: center;
+            min-width: 160px;
+            flex: 1;
+            max-width: 200px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(21, 101, 192, 0.08);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pipeline-step:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-blue);
+            border-color: var(--blue-light);
+        }
+
+        .pipeline-step .step-number {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-main);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pipeline-step .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .pipeline-step .step-title {
+            font-weight: 600;
+            color: var(--blue-dark);
+            font-size: 0.95rem;
+        }
+
+        .pipeline-arrow {
+            color: var(--blue-light);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .how-stats {
+            text-align: center;
+            background: var(--blue-pale);
+            padding: 24px 32px;
+            border-radius: 100px;
+            display: inline-flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0 auto;
+            color: var(--blue-deep);
+            font-weight: 600;
+        }
+
+        .how-stats-wrapper {
+            text-align: center;
+        }
+
+        .how-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .how-stats i {
+            color: var(--blue-primary);
+        }
+
+        /* ===== DIFFERENTIATORS ===== */
+        .differentiators {
+            background: var(--gray-soft);
+        }
+
+        .comparison-table-wrapper {
+            overflow-x: auto;
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
+            background: white;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .comparison-table thead th {
+            padding: 24px 20px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--white);
+            border-bottom: 2px solid #F1F5F9;
+        }
+
+        .comparison-table thead th.maivox-col {
+            background: var(--gradient-main);
+            color: white;
+            position: relative;
+        }
+
+        .comparison-table thead th.maivox-col::before {
+            content: '⭐ NUESTRO PRODUCTO';
+            position: absolute;
+            top: 6px;
+            left: 20px;
+            font-size: 0.65rem;
+            opacity: 0.8;
+            letter-spacing: 1.5px;
+        }
+
+        .comparison-table tbody td {
+            padding: 20px;
+            border-bottom: 1px solid #F1F5F9;
+            color: var(--gray-dark);
+            font-size: 0.95rem;
+        }
+
+        .comparison-table tbody td:first-child {
+            font-weight: 600;
+            color: var(--blue-dark);
+        }
+
+        .comparison-table tbody td.maivox-col {
+            background: rgba(21, 101, 192, 0.05);
+            font-weight: 600;
+            color: var(--blue-primary);
+            border-left: 3px solid var(--blue-light);
+            border-right: 3px solid var(--blue-light);
+        }
+
+        .comparison-table tbody tr:last-child td.maivox-col {
+            border-bottom: 3px solid var(--blue-light);
+        }
+
+        .comparison-table tbody tr:hover {
+            background: #FAFBFC;
+        }
+
+        /* ===== SPECS ===== */
+        .specs {
+            background: var(--white);
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .spec-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: 20px;
+            border: 1px solid rgba(21, 101, 192, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spec-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-main);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s;
+        }
+
+        .spec-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+
+        .spec-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .spec-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--gradient-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-blue);
+        }
+
+        .spec-label {
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .spec-value {
+            font-size: 1.25rem;
+            color: var(--blue-dark);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* ===== IMPACT ===== */
+        .impact {
+            background: var(--gradient-dark);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact::before {
+            content: '';
+            position: absolute;
+            top: -150px;
+            right: -150px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(66, 165, 245, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .impact::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: -150px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(21, 101, 192, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .impact .section-title {
+            color: white;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+            margin-top: 32px;
+        }
+
+        .impact-item {
+            text-align: center;
+        }
+
+        .impact-number {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, #90CAF9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+        }
+
+        .impact-label {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            font-weight: 400;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        /* ===== TEAM ===== */
+        .team {
+            background: var(--gray-soft);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .team-card {
+            background: var(--white);
+            padding: 32px 24px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            border: 1px solid rgba(21, 101, 192, 0.06);
+        }
+
+        .team-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-blue);
+        }
+
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-main);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-blue);
+        }
+
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--blue-dark);
+            margin-bottom: 6px;
+        }
+
+        .team-role {
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* ===== CONTACT ===== */
+        .contact {
+            background: var(--white);
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .contact-item {
+            background: var(--gray-soft);
+            padding: 20px 28px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--blue-dark);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid rgba(21, 101, 192, 0.08);
+        }
+
+        .contact-item:hover {
+            background: var(--blue-pale);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .contact-item i {
+            color: var(--blue-primary);
+            font-size: 1.25rem;
+        }
+
+        .contact-footer-text {
+            color: var(--gray-medium);
+            font-size: 0.95rem;
+            margin-top: 16px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--blue-dark);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 48px 24px 32px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .footer-logo .mai { color: white; }
+        .footer-logo .vox { color: var(--blue-light); }
+
+        .footer-tagline {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 24px auto;
+            max-width: 200px;
+        }
+
+        .footer-copy {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                right: -100%;
+                background: var(--white);
+                flex-direction: column;
+                width: 80%;
+                max-width: 300px;
+                height: calc(100vh - 64px);
+                padding: 32px;
+                gap: 20px;
+                box-shadow: var(--shadow-lg);
+                transition: right 0.3s;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            section {
+                padding: 70px 0;
+            }
+
+            .hero {
+                padding: 100px 24px 60px;
+            }
+
+            .hero-badges {
+                gap: 10px;
+            }
+
+            .badge {
+                padding: 12px 18px;
+                font-size: 0.85rem;
+            }
+
+            .pipeline {
+                flex-direction: column;
+            }
+
+            .pipeline-step {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .pipeline-arrow {
+                transform: rotate(90deg);
+            }
+
+            .how-stats {
+                padding: 20px;
+                border-radius: 16px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .problem-highlight {
+                padding: 32px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo" onclick="document.getElementById('hero').scrollIntoView()">
+                <span class="mai">Mai</span><span class="vox">Vox</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#problema">Problema</a></li>
+                <li><a href="#como-funciona">Cómo funciona</a></li>
+                <li><a href="#diferenciadores">Comparativa</a></li>
+                <li><a href="#especificaciones">Tecnología</a></li>
+                <li><a href="#equipo">Equipo</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="hero-content">
+            <h1 class="hero-logo">
+                <span class="mai">Mai</span><span class="vox">Vox</span>
+            </h1>
+            <div class="hero-tagline-small">LSM a voz</div>
+            <h2 class="hero-headline">Traducimos Lengua de Señas Mexicana a voz en tiempo real.</h2>
+            <p class="hero-subtitle">Tecnología accesible, portátil y sin conexión a internet.</p>
+            <div class="hero-badges">
+                <div class="badge">🔇 100% OFFLINE</div>
+                <div class="badge">💲 BAJO COSTO</div>
+                <div class="badge">🤝 IMPACTO SOCIAL</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROBLEM ===== -->
+    <section class="problem" id="problema">
+        <div class="container">
+            <h2 class="section-title fade-in">El problema que resolvemos</h2>
+            <p class="section-subtitle fade-in">La barrera de comunicación afecta a millones, y las soluciones actuales no son suficientes.</p>
+
+            <div class="problem-highlight fade-in">
+                <div class="number">2 millones</div>
+                <div class="text">de personas con discapacidad auditiva en México</div>
+            </div>
+
+            <div class="problem-points">
+                <div class="problem-card fade-in">
+                    <div class="icon"><i class="fas fa-dollar-sign"></i></div>
+                    <p>Las soluciones existentes superan los <strong>$10,000 MXN</strong>, fuera del alcance de la mayoría de las familias mexicanas.</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <div class="icon"><i class="fas fa-wifi"></i></div>
+                    <p>Requieren <strong>internet o smartphone</strong> constantemente, limitando su uso en escuelas, zonas rurales o emergencias.</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <div class="icon"><i class="fas fa-hands"></i></div>
+                    <p>No están adaptadas a la <strong>Lengua de Señas Mexicana (LSM)</strong>, que tiene gramática y vocabulario propios.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section class="how" id="como-funciona">
+        <div class="container">
+            <h2 class="section-title fade-in">¿Cómo funciona MaiVox?</h2>
+            <p class="section-subtitle fade-in">Cinco pasos para convertir una seña en una voz natural, todo en menos de un parpadeo.</p>
+
+            <div class="pipeline fade-in">
+                <div class="pipeline-step">
+                    <div class="step-number">1</div>
+                    <span class="step-icon">🖐️</span>
+                    <div class="step-title">Dedo se dobla</div>
+                </div>
+                <div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="pipeline-step">
+                    <div class="step-number">2</div>
+                    <span class="step-icon">📡</span>
+                    <div class="step-title">Sensor Flex detecta</div>
+                </div>
+                <div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="pipeline-step">
+                    <div class="step-number">3</div>
+                    <span class="step-icon">⚡</span>
+                    <div class="step-title">ESP32 procesa</div>
+                </div>
+                <div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="pipeline-step">
+                    <div class="step-number">4</div>
+                    <span class="step-icon">🧠</span>
+                    <div class="step-title">TinyML clasifica</div>
+                </div>
+                <div class="pipeline-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="pipeline-step">
+                    <div class="step-number">5</div>
+                    <span class="step-icon">🔊</span>
+                    <div class="step-title">Voz se reproduce</div>
+                </div>
+            </div>
+
+            <div class="how-stats-wrapper fade-in">
+                <div class="how-stats">
+                    <span><i class="fas fa-bolt"></i> Latencia de solo 120ms</span>
+                    <span><i class="fas fa-cloud-slash"></i> Completamente offline</span>
+                    <span><i class="fas fa-battery-three-quarters"></i> Batería de 6.6 horas</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DIFFERENTIATORS ===== -->
+    <section class="differentiators" id="diferenciadores">
+        <div class="container">
+            <h2 class="section-title fade-in">¿Por qué MaiVox?</h2>
+            <p class="section-subtitle fade-in">Comparativa frente a las alternativas actuales del mercado.</p>
+
+            <div class="comparison-table-wrapper fade-in">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th class="maivox-col">MaiVox</th>
+                            <th>Competencia internacional</th>
+                            <th>Apps móviles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Costo</td>
+                            <td class="maivox-col">$5,500 MXN</td>
+                            <td>+$15,000 MXN</td>
+                            <td>Gratis / Suscripción</td>
+                        </tr>
+                        <tr>
+                            <td>Conectividad</td>
+                            <td class="maivox-col">100% Offline</td>
+                            <td>Requiere internet</td>
+                            <td>Requiere internet</td>
+                        </tr>
+                        <tr>
+                            <td>Privacidad</td>
+                            <td class="maivox-col">Total (Edge)</td>
+                            <td>Servidores en la nube</td>
+                            <td>Datos en la nube</td>
+                        </tr>
+                        <tr>
+                            <td>Dependencia</td>
+                            <td class="maivox-col">Autónomo</td>
+                            <td>Necesita smartphone</td>
+                            <td>Cámara obligatoria</td>
+                        </tr>
+                        <tr>
+                            <td>Adaptado a LSM</td>
+                            <td class="maivox-col">✅ Sí</td>
+                            <td>❌ No</td>
+                            <td>❌ No</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SPECS ===== -->
+    <section class="specs" id="especificaciones">
+        <div class="container">
+            <h2 class="section-title fade-in">Tecnología de punta, precio accesible</h2>
+            <p class="section-subtitle fade-in">Hardware y software optimizados para máximo rendimiento con mínimo consumo.</p>
+
+            <div class="specs-grid">
+                <div class="spec-card fade-in">
+                    <div class="spec-icon"><i class="fas fa-microchip"></i></div>
+                    <div class="spec-label">Microcontrolador</div>
+                    <div class="spec-value">ESP32 DevKit V1</div>
+                </div>
+                <div class="spec-card fade-in">
+                    <div class="spec-icon"><i class="fas fa-wave-square"></i></div>
+                    <div class="spec-label">Sensores</div>
+                    <div class="spec-value">5 Flex + MPU-6050 IMU</div>
+                </div>
+                <div class="spec-card fade-in">
+                    <div class="spec-icon"><i class="fas fa-brain"></i></div>
+                    <div class="spec-label">IA embebida</div>
+                    <div class="spec-value">TinyML / TensorFlow Lite</div>
+                </div>
+                <div class="spec-card fade-in">
+                    <div class="spec-icon"><i class="fas fa-sign-language"></i></div>
+                    <div class="spec-label">Señas reconocidas</div>
+                    <div class="spec-value">37 (alfabeto LSM completo)</div>
+                </div>
+                <div class="spec-card fade-in">
+                    <div class="spec-icon"><i class="fas fa-stopwatch"></i></div>
+                    <div class="spec-label">Latencia</div>
+                    <div class="spec-value">120ms</div>
+                </div>
+                <div class="spec-card fade-in">
+                    <div class="spec-icon"><i class="fas fa-battery-full"></i></div>
+                    <div class="spec-label">Autonomía</div>
+                    <div class="spec-value">6.6 horas de uso continuo</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== IMPACT ===== -->
+    <section class="impact" id="impacto">
+        <div class="container">
+            <h2 class="section-title fade-in">Impacto social</h2>
+            <div class="impact-grid">
+                <div class="impact-item fade-in">
+                    <div class="impact-number">2M+</div>
+                    <div class="impact-label">personas con discapacidad auditiva en México</div>
+                </div>
+                <div class="impact-item fade-in">
+                    <div class="impact-number">100K+</div>
+                    <div class="impact-label">usuarios potenciales (5% mercado inicial)</div>
+                </div>
+                <div class="impact-item fade-in">
+                    <div class="impact-number">$5,500</div>
+                    <div class="impact-label">MXN vs $15,000 MXN de la competencia</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TEAM ===== -->
+    <section class="team" id="equipo">
+        <div class="container">
+            <h2 class="section-title fade-in">Equipo InnovaTecNM 2026</h2>
+            <p class="section-subtitle fade-in">Estudiantes mexicanos construyendo accesibilidad desde la educación pública.</p>
+
+            <div class="team-grid">
+                <div class="team-card fade-in">
+                    <div class="team-avatar">E</div>
+                    <div class="team-name">Emiliano</div>
+                    <div class="team-role">Líder de proyecto & Hardware</div>
+                </div>
+                <div class="team-card fade-in">
+                    <div class="team-avatar">Y</div>
+                    <div class="team-name">Yoyis</div>
+                    <div class="team-role">Documentación técnica</div>
+                </div>
+                <div class="team-card fade-in">
+                    <div class="team-avatar">N</div>
+                    <div class="team-name">Nelly</div>
+                    <div class="team-role">Modelo de negocios</div>
+                </div>
+                <div class="team-card fade-in">
+                    <div class="team-avatar">U</div>
+                    <div class="team-name">Uriel</div>
+                    <div class="team-role">Desarrollo de software</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section class="contact" id="contacto">
+        <div class="container">
+            <h2 class="section-title fade-in">Contáctanos</h2>
+            <p class="section-subtitle fade-in">¿Quieres saber más, colaborar o apoyar el proyecto? Escríbenos.</p>
+
+            <div class="contact-info fade-in">
+                <a href="mailto:maivox.mx@gmail.com" class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>maivox.mx@gmail.com</span>
+                </a>
+                <a href="tel:+525578400508" class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+52 55 7840 0508</span>
+                </a>
+            </div>
+            <p class="contact-footer-text fade-in">Proyecto universitario mexicano · InnovaTecNM 2026</p>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-logo">
+            <span class="mai">Mai</span><span class="vox">Vox</span>
+        </div>
+        <div class="footer-tagline">LSM a voz</div>
+        <div class="footer-divider"></div>
+        <div class="footer-copy">© 2026 MaiVox · Hecho con 🤍 en México</div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = navToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const icon = navToggle.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+            });
+        });
+
+        // Fade in animations on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+</html>
