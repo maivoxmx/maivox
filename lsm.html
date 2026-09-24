@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Consulta LSM · MaiVox</title>
+<meta name="description" content="Consulta cómo se hacen más de 980 señas de la Lengua de Señas Mexicana (variante CDMX) y aprende a deletrear tu nombre. Un proyecto de MaiVox.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --blue-dark: #0D1B2A;
+        --blue-deep: #0A2540;
+        --blue-primary: #1565C0;
+        --blue-light: #42A5F5;
+        --blue-pale: #E3F2FD;
+        --white: #ffffff;
+        --gray-soft: #F8FAFC;
+        --gray-medium: #64748B;
+        --gray-dark: #334155;
+        --gradient-main: linear-gradient(135deg, #1565C0 0%, #42A5F5 100%);
+        --gradient-dark: linear-gradient(135deg, #0D1B2A 0%, #1565C0 100%);
+        --shadow-sm: 0 2px 8px rgba(13, 27, 42, 0.06);
+        --shadow-md: 0 8px 24px rgba(13, 27, 42, 0.08);
+        --shadow-lg: 0 20px 50px rgba(21, 101, 192, 0.15);
+        --shadow-blue: 0 10px 40px rgba(21, 101, 192, 0.25);
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--blue-dark);
+        background: var(--white);
+        line-height: 1.55;
+        overflow-x: hidden;
+    }
+
+    a { color: var(--blue-primary); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 1000;
+        padding: 16px 0;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba(21, 101, 192, 0.08);
+    }
+    .navbar.scrolled { padding: 12px 0; box-shadow: var(--shadow-sm); }
+
+    .nav-container {
+        max-width: 1200px; margin: 0 auto; padding: 0 24px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .nav-logo {
+        font-size: 1.5rem; font-weight: 800;
+        letter-spacing: -0.5px; cursor: pointer;
+        text-decoration: none;
+    }
+    .nav-logo .mai { color: var(--blue-dark); }
+    .nav-logo .vox { color: var(--blue-light); }
+
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+        color: var(--gray-dark); text-decoration: none;
+        font-weight: 500; font-size: 0.95rem;
+        transition: color 0.2s; position: relative;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--blue-primary); }
+    .nav-links a::after {
+        content: ''; position: absolute; bottom: -6px; left: 0;
+        width: 0; height: 2px; background: var(--gradient-main);
+        transition: width 0.3s;
+    }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    .nav-toggle {
+        display: none; background: none; border: none;
+        font-size: 1.5rem; color: var(--blue-dark); cursor: pointer;
+    }
+
+    /* ===== HERO ===== */
+    .hero-lsm {
+        padding: 140px 0 60px;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(180deg, #F8FBFF 0%, #E3F2FD 100%);
+    }
+
+    .blob {
+        position: absolute; border-radius: 50%;
+        filter: blur(80px); opacity: 0.5; z-index: 0;
+        pointer-events: none;
+    }
+    .blob-1 {
+        width: 420px; height: 420px;
+        background: radial-gradient(circle, #42A5F5 0%, transparent 70%);
+        top: -120px; right: -140px;
+    }
+    .blob-2 {
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, #1565C0 0%, transparent 70%);
+        bottom: -100px; left: -80px;
+    }
+
+    .hero-inner { position: relative; z-index: 1; }
+
+    .eyebrow {
+        display: inline-block;
+        font-size: 0.8rem; font-weight: 700;
+        color: var(--blue-primary);
+        letter-spacing: 2.5px; text-transform: uppercase;
+        padding: 6px 14px;
+        background: var(--blue-pale);
+        border-radius: 100px;
+        margin-bottom: 16px;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        line-height: 1.1;
+        margin-bottom: 16px;
+        color: var(--blue-dark);
+        letter-spacing: -1.5px;
+        font-weight: 800;
+        max-width: 780px;
+    }
+
+    .lede {
+        font-size: 1.1rem;
+        color: var(--gray-medium);
+        max-width: 65ch;
+    }
+
+    .beta {
+        display: inline-block; margin-top: 20px;
+        font-size: 0.9rem;
+        background: rgba(21, 101, 192, 0.08);
+        color: var(--blue-deep);
+        padding: 10px 16px;
+        border-radius: 100px;
+        border: 1px solid rgba(21, 101, 192, 0.15);
+        font-weight: 500;
+    }
+
+    .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+    .tabs a {
+        text-decoration: none;
+        color: var(--blue-dark);
+        background: var(--white);
+        padding: 10px 18px;
+        border-radius: 100px;
+        font-weight: 600; font-size: 0.9rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(21, 101, 192, 0.1);
+        transition: all 0.3s;
+    }
+    .tabs a:hover {
+        background: var(--blue-primary);
+        color: var(--white);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-blue);
+    }
+
+    /* ===== SECTIONS ===== */
+    section.block { padding: 70px 0; border-top: 1px solid rgba(21, 101, 192, 0.08); }
+
+    h2 {
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        font-weight: 800;
+        color: var(--blue-dark);
+        margin-bottom: 16px;
+        letter-spacing: -0.8px;
+    }
+
+    .panel {
+        background: var(--white);
+        border: 1px solid rgba(21, 101, 192, 0.08);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* SEÑA DEL DÍA */
+    .dia {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 24px;
+        align-items: center;
+        background: var(--white);
+        border: 1px solid rgba(21, 101, 192, 0.08);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: var(--shadow-md);
+    }
+    .dia .badge {
+        width: 96px; height: 96px;
+        border-radius: 24px;
+        background: var(--gradient-main);
+        color: white;
+        display: grid; place-items: center;
+        font-size: 2.6rem;
+        box-shadow: var(--shadow-blue);
+    }
+    .dia .badge-label {
+        font-size: 0.75rem; font-weight: 700;
+        letter-spacing: 2px; text-transform: uppercase;
+        color: var(--blue-primary);
+        margin-bottom: 6px;
+    }
+    .dia h3 {
+        margin: 0 0 8px; font-size: 1.55rem;
+        color: var(--blue-dark);
+        letter-spacing: -0.5px;
+    }
+
+    /* BUSCADOR */
+    .search {
+        display: flex; gap: 12px; flex-wrap: wrap;
+        margin: 20px 0 16px;
+    }
+    .search input, .search select {
+        font: inherit;
+        color: var(--blue-dark);
+        background: var(--white);
+        border: 1.5px solid rgba(21, 101, 192, 0.15);
+        border-radius: 12px;
+        padding: 14px 16px;
+        transition: all 0.2s;
+    }
+    .search input { flex: 1 1 280px; font-size: 1.02rem; }
+    .search input:focus, .search select:focus {
+        outline: none;
+        border-color: var(--blue-primary);
+        box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.1);
+    }
+
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+    .chip {
+        font: inherit; font-size: 0.88rem; font-weight: 600;
+        border: 1px solid rgba(21, 101, 192, 0.12);
+        background: var(--white);
+        color: var(--blue-dark);
+        padding: 8px 16px;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .chip:hover { background: var(--blue-pale); border-color: var(--blue-light); }
+    .chip[aria-pressed="true"] {
+        background: var(--gradient-main);
+        border-color: var(--blue-primary);
+        color: white;
+        box-shadow: var(--shadow-blue);
+    }
+
+    .count {
+        font-size: 0.9rem; color: var(--gray-medium);
+        margin: 8px 0 18px; font-weight: 500;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 14px;
+    }
+
+    details.sena {
+        background: var(--white);
+        border: 1px solid rgba(21, 101, 192, 0.08);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.25s;
+    }
+    details.sena:hover {
+        border-color: var(--blue-light);
+        box-shadow: var(--shadow-md);
+    }
+    details.sena summary {
+        list-style: none; cursor: pointer;
+        padding: 16px 18px;
+        display: flex; justify-content: space-between;
+        gap: 12px; align-items: flex-start;
+    }
+    details.sena summary::-webkit-details-marker { display: none; }
+    details.sena[open] { grid-column: 1/-1; box-shadow: var(--shadow-md); border-color: var(--blue-light); }
+
+    .sena .name {
+        font-weight: 700; font-size: 1.05rem;
+        color: var(--blue-dark);
+    }
+    .sena .type {
+        font-size: 0.82rem; color: var(--gray-medium);
+        margin-top: 3px;
+    }
+    .sena .gtag {
+        flex: none;
+        font-size: 0.72rem; font-weight: 700;
+        background: var(--blue-pale);
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--blue-primary);
+        letter-spacing: 0.5px;
+    }
+    .sena .gtag.mx {
+        background: var(--gradient-main);
+        color: white;
+    }
+
+    .body {
+        padding: 4px 18px 18px;
+        display: grid; gap: 12px;
+        border-top: 1px solid rgba(21, 101, 192, 0.06);
+        padding-top: 16px;
+    }
+    .row {
+        display: grid; grid-template-columns: 140px 1fr;
+        gap: 12px; font-size: 0.95rem;
+    }
+    .row b {
+        color: var(--gray-medium); font-weight: 600;
+        font-size: 0.85rem; text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .row span { color: var(--gray-dark); }
+
+    .img-slot {
+        border: 1.5px dashed rgba(21, 101, 192, 0.2);
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 0.9rem;
+        color: var(--gray-medium);
+        text-align: center;
+        background: var(--gray-soft);
+    }
+
+    .more {
+        display: block;
+        margin: 24px auto 0;
+        font: inherit; font-weight: 700;
+        background: var(--gradient-main);
+        color: white;
+        border: 0;
+        border-radius: 100px;
+        padding: 14px 32px;
+        cursor: pointer;
+        box-shadow: var(--shadow-blue);
+        transition: transform 0.2s;
+    }
+    .more:hover { transform: translateY(-2px); }
+
+    .empty {
+        padding: 40px 24px; text-align: center;
+        color: var(--gray-medium);
+        background: var(--gray-soft);
+        border-radius: 16px;
+        grid-column: 1/-1;
+    }
+
+    /* DELETREO */
+    .spell {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+        gap: 12px; margin-top: 20px;
+    }
+    .letter {
+        background: var(--white);
+        border: 1px solid rgba(21, 101, 192, 0.08);
+        border-radius: 16px;
+        padding: 16px;
+        transition: all 0.25s;
+    }
+    .letter:hover {
+        border-color: var(--blue-light);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+    .letter b {
+        display: block;
+        font-size: 2.2rem; line-height: 1;
+        background: var(--gradient-main);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 900;
+    }
+    .letter span {
+        display: block; margin-top: 8px;
+        font-size: 0.88rem;
+        color: var(--gray-medium);
+    }
+    .letter .mov {
+        display: inline-block; margin-top: 8px;
+        font-size: 0.72rem; font-weight: 700;
+        background: var(--blue-pale);
+        color: var(--blue-primary);
+        padding: 4px 10px;
+        border-radius: 100px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    /* GLOSARIO */
+    .gl {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 14px; margin-top: 20px;
+    }
+    .gl div {
+        background: var(--white);
+        border: 1px solid rgba(21, 101, 192, 0.08);
+        border-radius: 14px;
+        padding: 18px 20px;
+        font-size: 0.93rem;
+        color: var(--gray-dark);
+        transition: all 0.25s;
+    }
+    .gl div:hover {
+        border-color: var(--blue-light);
+        box-shadow: var(--shadow-sm);
+    }
+    .gl div b {
+        color: var(--blue-dark);
+        font-weight: 700;
+        font-size: 0.98rem;
+        display: block; margin-bottom: 6px;
+    }
+    .gl code {
+        background: var(--blue-pale);
+        color: var(--blue-primary);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    .btn {
+        display: inline-flex; align-items: center; gap: 10px;
+        background: var(--gradient-main);
+        color: white;
+        text-decoration: none;
+        border-radius: 100px;
+        padding: 14px 28px;
+        font-weight: 700;
+        box-shadow: var(--shadow-blue);
+        transition: transform 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer.site-footer {
+        background: var(--blue-dark);
+        color: rgba(255, 255, 255, 0.7);
+        padding: 48px 24px 32px;
+        text-align: center;
+    }
+    .footer-logo {
+        font-size: 2rem; font-weight: 800;
+        margin-bottom: 8px; letter-spacing: -1px;
+    }
+    .footer-logo .mai { color: white; }
+    .footer-logo .vox { color: var(--blue-light); }
+    .footer-tagline {
+        font-size: 0.95rem; color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 24px;
+        letter-spacing: 1px; text-transform: uppercase;
+    }
+    .footer-divider {
+        height: 1px; background: rgba(255, 255, 255, 0.1);
+        margin: 24px auto; max-width: 200px;
+    }
+    .footer-cite {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        max-width: 780px;
+        margin: 0 auto 12px;
+        line-height: 1.6;
+    }
+    .footer-cite em { color: rgba(255, 255, 255, 0.7); font-style: italic; }
+    .footer-cite a { color: var(--blue-light); text-decoration: none; }
+    .footer-cite a:hover { text-decoration: underline; }
+    .footer-copy { font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            position: fixed;
+            top: 64px; right: -100%;
+            background: var(--white);
+            flex-direction: column;
+            width: 80%; max-width: 300px;
+            height: calc(100vh - 64px);
+            padding: 32px;
+            gap: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: right 0.3s;
+        }
+        .nav-links.active { right: 0; }
+        .nav-toggle { display: block; }
+
+        .hero-lsm { padding: 110px 0 40px; }
+        section.block { padding: 50px 0; }
+        .dia { grid-template-columns: 1fr; padding: 24px; }
+        .dia .badge { width: 80px; height: 80px; font-size: 2.2rem; }
+        .row { grid-template-columns: 1fr; gap: 2px; }
+        .row b { font-size: 0.75rem; }
+    }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a class="nav-logo" href="./">
+            <span class="mai">Mai</span><span class="vox">Vox</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="./#productos">Productos</a></li>
+            <li><a href="./#impacto">Impacto</a></li>
+            <li><a href="./#logros">Logros</a></li>
+            <li><a href="./lsm.html" class="active">Consulta LSM</a></li>
+            <li><a href="./#equipo">Equipo</a></li>
+            <li><a href="./#contacto">Contacto</a></li>
+        </ul>
+        <button class="nav-toggle" id="navToggle" aria-label="Menú">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero-lsm">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="container hero-inner">
+        <div class="eyebrow">MaiVox · Consulta LSM</div>
+        <h1>¿Cómo se dice en Lengua de Señas Mexicana?</h1>
+        <p class="lede">Busca una palabra y descubre cómo se hace su seña: la forma de la mano, hacia dónde mira la palma, dónde se hace y cómo se mueve. Variante de la Ciudad de México.</p>
+        <div class="beta">🧪 Versión beta. Las descripciones son una guía; la mejor forma de aprender LSM es con personas con discapacidad auditiva.</div>
+        <nav class="tabs">
+            <a href="#buscar">🔎 Buscar señas</a>
+            <a href="#deletrear">✋ Deletrea tu nombre</a>
+            <a href="#como-leer">📖 Cómo leer una seña</a>
+            <a href="#proponer">✉️ Propón una seña</a>
+        </nav>
+    </div>
+</header>
+
+<section class="block container" id="hoy">
+    <div class="dia">
+        <div class="badge">🤟</div>
+        <div>
+            <div class="badge-label">Seña del día</div>
+            <h3 id="dia-name">…</h3>
+            <div id="dia-desc" class="type" style="color:var(--gray-medium);font-size:0.95rem"></div>
+        </div>
+    </div>
+</section>
+
+<section class="block container" id="buscar">
+    <h2>Buscar señas</h2>
+    <div class="search">
+        <input id="q" type="search" placeholder="Escribe una palabra: ayudar, temblor, abogado…" aria-label="Buscar seña" autocomplete="off">
+        <select id="grupo" aria-label="Forma de la mano">
+            <option value="">Todas las formas de mano</option>
+            <option value="B-P">B-Palma · mano plana</option>
+            <option value="A">A · puño, pulgar al lado</option>
+            <option value="L">L · índice y pulgar en L</option>
+            <option value="S">S · puño cerrado</option>
+            <option value="5-G">5-Garra · dedos abiertos</option>
+            <option value="C">C · mano en forma de C</option>
+            <option value="O">O · dedos forman un círculo</option>
+        </select>
+    </div>
+    <div class="chips" id="chips">
+        <button class="chip" data-tag="" aria-pressed="true">Todas</button>
+        <button class="chip" data-tag="basicas" aria-pressed="false">💬 Básicas</button>
+        <button class="chip" data-tag="salud" aria-pressed="false">🏥 Salud</button>
+        <button class="chip" data-tag="justicia" aria-pressed="false">⚖️ Justicia y gobierno</button>
+        <button class="chip" data-tag="emergencia" aria-pressed="false">🚨 Emergencias</button>
+        <button class="chip" data-tag="escuela" aria-pressed="false">🎓 Escuela</button>
+        <button class="chip" data-tag="mx" aria-pressed="false" id="chip-mx" hidden>🧤 Reconocidas por MaiVox</button>
+    </div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <button class="more" id="more" hidden>Ver más señas</button>
+</section>
+
+<section class="block container" id="deletrear">
+    <h2>Deletrea tu nombre</h2>
+    <p class="lede">Cuando una palabra no tiene seña, o para decir tu nombre, se usa el alfabeto manual (dactilología). Escribe tu nombre y te decimos qué hacer con la mano, letra por letra.</p>
+    <div class="search"><input id="nombre" type="text" placeholder="Escribe tu nombre" maxlength="24" aria-label="Tu nombre" autocomplete="off"></div>
+    <div style="color:var(--gray-medium);font-size:0.92rem;margin-top:4px">Hazlo con tu mano dominante, a la altura del hombro, con la palma hacia la persona que te ve. Las letras marcadas con "movimiento" no son una pose fija.</div>
+    <div class="spell" id="spell"></div>
+</section>
+
+<section class="block container" id="como-leer">
+    <h2>Cómo leer una seña</h2>
+    <p class="lede">Cada seña se describe con los mismos parámetros que usan los lingüistas de la LSM, y que también mide el guante MaiVox.</p>
+    <div class="gl">
+        <div><b>Forma de la mano</b>Cómo están los dedos: plana (B), puño (A, S), en L, abierta (5), en C o en O. Los códigos como <code>A.1</code> son variantes de cada forma.</div>
+        <div><b>Orientación</b>Hacia dónde mira la palma: arriba, abajo, afuera, adentro, a la izquierda o a la derecha.</div>
+        <div><b>Ubicación</b>Dónde se hace la seña: frente a la cara, el pecho, la cintura, el hombro…</div>
+        <div><b>Movimiento</b>Recto, en arco, circular, agitado, repetido, o sin movimiento.</div>
+        <div><b>Rasgos no manuales</b>Gestos de la cara y el cuerpo que forman parte de la seña. ¡En LSM la cara también habla!</div>
+        <div><b>MD / MB</b>Mano dominante y mano base (la que sirve de apoyo en señas de dos manos).</div>
+    </div>
+</section>
+
+<section class="block container" id="proponer">
+    <h2>¿Falta una seña o encontraste un error?</h2>
+    <p class="lede">Queremos construir esto con la comunidad de personas con discapacidad auditiva. Si conoces una seña que no está, o alguna descripción puede mejorar, mándanos un correo. Revisamos cada propuesta antes de publicarla.</p>
+    <p style="margin-top:22px"><a class="btn" id="mail" href="#"><i class="fas fa-envelope"></i> Proponer una seña por correo</a></p>
+    <p style="color:var(--gray-medium);font-size:0.92rem;margin-top:14px">Puedes adjuntar una foto o un video corto de la seña. Si eres persona con discapacidad auditiva o intérprete, dinos: nos ayuda mucho a validar.</p>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+    <div class="footer-logo">
+        <span class="mai">Mai</span><span class="vox">Vox</span>
+    </div>
+    <div class="footer-tagline">Sin internet · Sin límites</div>
+    <div class="footer-divider"></div>
+    <p class="footer-cite">
+        Descripciones de señas basadas en el <em>Diccionario de Lengua de Señas Mexicana de la Ciudad de México</em> (INDEPEDI, Gobierno de la Ciudad de México, 2017), adaptadas por el equipo MaiVox. La LSM varía entre regiones y comunidades; esta página documenta la variante de la CDMX. · <a href="./">Volver a MaiVox</a>
+    </p>
+    <div class="footer-copy">© 2026 MaiVox · Hecho con 🤍 en México</div>
+</footer>
+
+<script>
+/* ===== CONFIGURACIÓN ===== */
+const CORREO = "maivox.mx@gmail.com";
+const DATA_URL = "senas.json";
+const POR_PAGINA = 36;
+
+const GRUPOS = {"B-P":"B-Palma","A":"A","L":"L","S":"S","5-G":"5-Garra","C":"C","O":"O"};
+const ALFABETO = {
+    "A":["Puño con el pulgar extendido al lado."],
+    "B":["Mano plana hacia arriba, dedos juntos, pulgar doblado sobre la palma."],
+    "C":["Mano curva formando la letra C."],
+    "D":["Índice arriba; los demás dedos curvados tocan el pulgar."],
+    "E":["Los cuatro dedos doblados con las puntas sobre el pulgar."],
+    "F":["Pulgar e índice se tocan; medio, anular y meñique extendidos."],
+    "G":["Índice extendido de lado, pulgar arriba, los demás cerrados."],
+    "H":["Índice y medio extendidos de lado, juntos; pulgar arriba."],
+    "I":["Puño con el meñique hacia arriba."],
+    "J":["Meñique arriba y la mano traza la curva de una J.",true],
+    "K":["Índice y medio arriba con el pulgar entre ellos; la mano sube girando.",true],
+    "L":["Índice arriba y pulgar al lado, formando una L."],
+    "LL":["Forma de L que se desplaza hacia un lado.",true],
+    "M":["Mano hacia abajo: índice, medio y anular cuelgan sobre el pulgar."],
+    "N":["Mano hacia abajo: índice y medio cuelgan sobre el pulgar."],
+    "Ñ":["Forma de N con un movimiento ondulado hacia un lado.",true],
+    "O":["Las puntas de todos los dedos tocan el pulgar, formando un círculo."],
+    "P":["Índice arriba, medio hacia el frente, el pulgar toca el medio."],
+    "Q":["Índice y pulgar curvados; la mano gira hacia abajo.",true],
+    "R":["Índice y medio arriba, cruzados."],
+    "RR":["Forma de R que se desplaza hacia un lado.",true],
+    "S":["Puño cerrado con el pulgar sobre los dedos."],
+    "T":["Puño con el pulgar asomando entre el índice y el medio."],
+    "U":["Índice y medio arriba, juntos."],
+    "V":["Índice y medio arriba, separados."],
+    "W":["Índice, medio y anular arriba, separados."],
+    "X":["Índice en gancho con el pulgar extendido; la mano sube.",true],
+    "Y":["Pulgar y meñique extendidos."],
+    "Z":["El índice dibuja una Z en el aire.",true]
+};
+
+const $ = s => document.querySelector(s);
+const norm = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[¿?¡!]/g,"");
+const esc = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let SENAS=[], filtradas=[], mostradas=0, tag="";
+
+function card(s){
+    const rows=[["Tipo",s.t],["Forma de mano",s.cm],["Orientación",s.or],["Ubicación",s.ub],["Movimiento",s.mv],["Cara y cuerpo",s.rnm]]
+        .filter(r=>r[1]).map(r=>`<div class="row"><b>${r[0]}</b><span>${esc(r[1])}</span></div>`).join("");
+    const img = s.img ? `<img src="${esc(s.img)}" alt="Seña de ${esc(s.p)}" style="max-width:100%;border-radius:10px">`
+                      : `<div class="img-slot">📷 Imagen en camino. ¿Tienes una? <a href="${mailto(s.p)}">Envíanosla</a></div>`;
+    return `<details class="sena"><summary><div><div class="name">${esc(s.p)}</div><div class="type">${esc(s.t)}</div></div>
+        <span class="gtag ${s.mx?'mx':''}">${s.mx?'🧤 MaiVox':GRUPOS[s.g]||s.g}</span></summary>
+        <div class="body">${rows}${img}</div></details>`;
+}
+function filtrar(){
+    const q=norm($("#q").value.trim()), g=$("#grupo").value;
+    filtradas=SENAS.filter(s=>(!g||s.g===g)&&(!tag||(tag==="mx"?s.mx:s.tags.includes(tag)))&&(!q||norm(s.p).includes(q)));
+    if(q) filtradas.sort((a,b)=>(norm(a.p).startsWith(q)?0:1)-(norm(b.p).startsWith(q)?0:1));
+    mostradas=0; $("#grid").innerHTML=""; pintar();
+}
+function pintar(){
+    const lote=filtradas.slice(mostradas,mostradas+POR_PAGINA);
+    $("#grid").insertAdjacentHTML("beforeend",lote.map(card).join(""));
+    mostradas+=lote.length;
+    $("#count").textContent=`${filtradas.length} seña${filtradas.length===1?"":"s"}`;
+    $("#more").hidden=mostradas>=filtradas.length;
+    if(!filtradas.length) $("#grid").innerHTML=`<div class="empty">No encontramos esa seña todavía. <a href="${mailto($("#q").value)}">¿Nos ayudas a agregarla?</a></div>`;
+}
+function mailto(palabra){
+    const body=`Palabra: ${palabra||""}
+Región o comunidad donde se usa:
+¿Una mano o dos manos?:
+Forma de la mano:
+Hacia dónde mira la palma:
+Dónde se hace (cara, pecho, cintura...):
+Cómo se mueve:
+Gestos de la cara (si hay):
+¿Eres persona con discapacidad auditiva, intérprete o estás aprendiendo LSM?:
+
+(Puedes adjuntar una foto o video corto de la seña)`;
+    return `mailto:${CORREO}?subject=${encodeURIComponent("Propuesta de seña LSM: "+(palabra||""))}&body=${encodeURIComponent(body)}`;
+}
+function deletrear(){
+    const txt=$("#nombre").value.toUpperCase().normalize("NFC");
+    const out=[];
+    for(let i=0;i<txt.length;i++){
+        let c=txt[i];
+        if((c==="L"||c==="R")&&txt[i+1]===c){c=c+c;i++;}
+        else if(c!=="Ñ") c=c.normalize("NFD").replace(/[̀-ͯ]/g,"");
+        if(ALFABETO[c]) out.push(`<div class="letter"><b>${c}</b><span>${ALFABETO[c][0]}</span>${ALFABETO[c][1]?'<br><span class="mov">movimiento</span>':''}</div>`);
+    }
+    $("#spell").innerHTML=out.join("");
+}
+function senaDelDia(){
+    const pool=SENAS.filter(s=>s.t==="Una mano"&&!s.rnm);
+    const d=new Date(), n=d.getFullYear()*372+d.getMonth()*31+d.getDate();
+    const s=pool[n%pool.length]; if(!s) return;
+    $("#dia-name").textContent=s.p;
+    $("#dia-desc").textContent=[s.cm&&"Forma: "+s.cm, s.or, s.ub, s.mv].filter(Boolean).join(" · ");
+}
+async function init(){
+    try{ SENAS = window.SENAS_DATA || await (await fetch(DATA_URL)).json(); }
+    catch(e){ $("#grid").innerHTML='<div class="empty">No se pudieron cargar las señas.</div>'; return; }
+    if(SENAS.some(s=>s.mx)) $("#chip-mx").hidden=false;
+    $("#mail").href=mailto("");
+    senaDelDia(); filtrar();
+}
+$("#q").addEventListener("input",filtrar);
+$("#grupo").addEventListener("change",filtrar);
+$("#more").addEventListener("click",pintar);
+$("#nombre").addEventListener("input",deletrear);
+$("#chips").addEventListener("click",e=>{
+    const b=e.target.closest(".chip"); if(!b) return;
+    document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));
+    tag=b.dataset.tag; filtrar();
+});
+
+// Navbar scroll
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+});
+// Mobile menu
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+    const icon = navToggle.querySelector('i');
+    icon.classList.toggle('fa-bars');
+    icon.classList.toggle('fa-times');
+});
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        const icon = navToggle.querySelector('i');
+        icon.classList.add('fa-bars');
+        icon.classList.remove('fa-times');
+    });
+});
+
+init();
+</script>
+</body>
+</html>

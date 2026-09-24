@@ -576,6 +576,16 @@
             font-size: 0.9rem;
         }
 
+        .lsm-cta {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .lsm-cta:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--blue-light);
+        }
+
         /* ===== IMPACT ===== */
         .impact {
             background: var(--gradient-dark);
@@ -1332,6 +1342,7 @@
                 <li><a href="#productos">Productos</a></li>
                 <li><a href="#impacto">Impacto</a></li>
                 <li><a href="#logros">Logros</a></li>
+                <li><a href="lsm.html">Consulta LSM</a></li>
                 <li><a href="#equipo">Equipo</a></li>
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
@@ -1418,6 +1429,19 @@
                     </div>
                 </div>
             </div>
+
+            <a href="lsm.html" class="calibrator-inner lsm-cta fade-in" style="margin-top:24px;text-decoration:none;color:inherit;">
+                <div class="calibrator-visual" style="background:linear-gradient(135deg,#0D1B2A 0%, #1565C0 100%)"><i class="fas fa-hands"></i></div>
+                <div class="calibrator-content">
+                    <div class="calibrator-eyebrow">Recurso público</div>
+                    <h3 class="calibrator-name">Consulta LSM</h3>
+                    <p class="calibrator-description">Explora cómo se hacen más de 980 señas de la Lengua de Señas Mexicana (variante CDMX) y aprende a deletrear tu nombre.</p>
+                    <div class="calibrator-availability" style="background:rgba(21,101,192,0.1);color:var(--blue-primary);">
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Abrir consulta</span>
+                    </div>
+                </div>
+            </a>
         </div>
     </section>
 
@@ -1565,10 +1589,6 @@
                 <a href="mailto:maivox.mx@gmail.com" class="contact-item">
                     <i class="fas fa-envelope"></i>
                     <span>maivox.mx@gmail.com</span>
-                </a>
-                <a href="tel:+525578400508" class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <span>+52 55 7840 0508</span>
                 </a>
             </div>
 
