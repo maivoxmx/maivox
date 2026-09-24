@@ -44,6 +44,62 @@
             background: var(--white);
             line-height: 1.6;
             overflow-x: hidden;
+            cursor: default;
+        }
+
+        h1, h2, h3, h4, h5, h6, p, span, div, li, td, th {
+            cursor: default;
+        }
+
+        input, textarea, [contenteditable] {
+            cursor: text;
+        }
+
+        a, button, [role="button"], summary, .chip, label, select {
+            cursor: pointer;
+        }
+
+        /* Toast feedback for email copy */
+        .email-toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--blue-dark);
+            color: white;
+            padding: 14px 22px;
+            border-radius: 100px;
+            font-weight: 500;
+            font-size: 0.92rem;
+            z-index: 10000;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            white-space: nowrap;
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+            pointer-events: none;
+            max-width: calc(100vw - 40px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .email-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .email-toast i {
+            color: var(--blue-light);
+            margin-right: 8px;
+        }
+        .email-toast strong {
+            color: white;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+        @media (max-width: 480px) {
+            .email-toast {
+                font-size: 0.85rem;
+                padding: 12px 18px;
+                bottom: 20px;
+            }
         }
 
         .container {
@@ -1665,6 +1721,37 @@
 
         document.querySelectorAll('.fade-in').forEach(el => {
             observer.observe(el);
+        });
+
+        // ===== Email copy handler =====
+        // Copies email to clipboard on click and shows feedback.
+        // Still triggers mailto: for those with a mail client configured.
+        function showEmailToast(msg) {
+            let toast = document.querySelector('.email-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'email-toast';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = msg;
+            requestAnimationFrame(() => toast.classList.add('show'));
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+        }
+
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href^="mailto:"]');
+            if (!link) return;
+            const email = link.href.replace(/^mailto:/, '').split('?')[0];
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(email).then(() => {
+                    showEmailToast('<i class="fas fa-clipboard-check"></i> Correo copiado: <strong>' + email + '</strong>');
+                }).catch(() => {
+                    showEmailToast('<i class="fas fa-envelope"></i> Escríbenos a: <strong>' + email + '</strong>');
+                });
+            } else {
+                showEmailToast('<i class="fas fa-envelope"></i> Escríbenos a: <strong>' + email + '</strong>');
+            }
         });
     </script>
 
