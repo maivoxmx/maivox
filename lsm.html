@@ -438,11 +438,22 @@
         border-radius: 16px;
         padding: 16px;
         transition: all 0.25s;
+        overflow: hidden;
     }
     .letter:hover {
         border-color: var(--blue-light);
         transform: translateY(-3px);
         box-shadow: var(--shadow-md);
+    }
+    .letter img {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 6 / 5;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        background: var(--gray-soft);
     }
     .letter b {
         display: block;
@@ -467,6 +478,167 @@
         border-radius: 100px;
         letter-spacing: 0.5px;
         text-transform: uppercase;
+    }
+
+    /* ABECEDARIO COMPLETO */
+    .abecedario-wrap { margin-bottom: 32px; }
+    .abecedario-title {
+        font-size: 0.85rem; font-weight: 700;
+        color: var(--gray-medium);
+        letter-spacing: 1.5px; text-transform: uppercase;
+        margin: 22px 0 14px;
+    }
+    .abecedario {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    .abc-cell {
+        background: var(--white);
+        border: 1px solid rgba(21, 101, 192, 0.08);
+        border-radius: 14px;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        font-family: inherit;
+    }
+    .abc-cell:hover {
+        border-color: var(--blue-light);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+    .abc-cell:focus-visible {
+        outline: 2px solid var(--blue-primary);
+        outline-offset: 2px;
+    }
+    .abc-cell img {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 6 / 5;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        background: var(--gray-soft);
+    }
+    .abc-cell .abc-letter {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--blue-dark);
+        line-height: 1;
+        letter-spacing: -0.5px;
+    }
+    .abc-cell .abc-mov {
+        display: inline-block;
+        margin-top: 4px;
+        font-size: 0.62rem; font-weight: 700;
+        background: var(--blue-pale);
+        color: var(--blue-primary);
+        padding: 2px 6px;
+        border-radius: 100px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .abc-note {
+        margin-top: 14px;
+        font-size: 0.85rem;
+        color: var(--gray-medium);
+        line-height: 1.55;
+    }
+    .abc-note a { color: var(--blue-primary); font-weight: 600; }
+
+    @media (max-width: 480px) {
+        .abecedario {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .abc-cell { padding: 8px; }
+        .abc-cell .abc-letter { font-size: 1.25rem; }
+    }
+
+    /* MODAL / LIGHTBOX */
+    .modal-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(13, 27, 42, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex; align-items: center; justify-content: center;
+        padding: 24px;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+    }
+    .modal-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .modal-card {
+        background: var(--white);
+        border-radius: 24px;
+        padding: 32px;
+        max-width: 460px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        transform: scale(0.92);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-backdrop.open .modal-card { transform: scale(1); }
+    .modal-close {
+        float: right;
+        background: var(--gray-soft);
+        border: 0;
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        font-size: 1.1rem;
+        color: var(--gray-dark);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .modal-close:hover { background: var(--blue-pale); color: var(--blue-primary); }
+    .modal-card img {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 6 / 5;
+        object-fit: cover;
+        border-radius: 16px;
+        margin: 4px 0 20px;
+        background: var(--gray-soft);
+    }
+    .modal-card h3 {
+        font-size: 3.2rem;
+        font-weight: 900;
+        line-height: 1;
+        margin: 0 0 10px;
+        background: var(--gradient-main);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -1px;
+    }
+    .modal-card .modal-mov {
+        display: inline-block;
+        margin: 0 0 14px;
+        font-size: 0.72rem; font-weight: 700;
+        background: var(--blue-pale);
+        color: var(--blue-primary);
+        padding: 5px 12px;
+        border-radius: 100px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .modal-card p {
+        color: var(--gray-dark);
+        font-size: 1rem;
+        line-height: 1.55;
+        margin: 0;
     }
 
     /* GLOSARIO */
@@ -658,10 +830,28 @@
 <section class="block container" id="deletrear">
     <h2>Deletrea tu nombre</h2>
     <p class="lede">Cuando una palabra no tiene seña, o para decir tu nombre, se usa el alfabeto manual (dactilología). Escribe tu nombre y te decimos qué hacer con la mano, letra por letra.</p>
+
+    <div class="abecedario-wrap">
+        <div class="abecedario-title">Alfabeto manual LSM · 29 letras</div>
+        <div class="abecedario" id="abecedario" role="list"></div>
+        <p class="abc-note">Ilustraciones generadas con apoyo de IA y revisadas contra el Diccionario de LSM de la CDMX. ¿Ves un error? <a href="#" id="abc-report">Escríbenos</a>.</p>
+    </div>
+
     <div class="search"><input id="nombre" type="text" placeholder="Escribe tu nombre" maxlength="24" aria-label="Tu nombre" autocomplete="off"></div>
     <div style="color:var(--gray-medium);font-size:0.92rem;margin-top:4px">Hazlo con tu mano dominante, a la altura del hombro, con la palma hacia la persona que te ve. Las letras marcadas con "movimiento" no son una pose fija.</div>
     <div class="spell" id="spell"></div>
 </section>
+
+<!-- ===== MODAL / LIGHTBOX ===== -->
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-letter" hidden>
+    <div class="modal-card">
+        <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
+        <img id="modal-img" src="" alt="">
+        <h3 id="modal-letter"></h3>
+        <span class="modal-mov" id="modal-mov" hidden>movimiento</span>
+        <p id="modal-desc"></p>
+    </div>
+</div>
 
 <section class="block container" id="como-leer">
     <h2>Cómo leer una seña</h2>
@@ -777,6 +967,14 @@ Gestos de la cara (si hay):
 (Puedes adjuntar una foto o video corto de la seña)`;
     return `mailto:${CORREO}?subject=${encodeURIComponent("Propuesta de seña LSM: "+(palabra||""))}&body=${encodeURIComponent(body)}`;
 }
+function letraArchivo(letra) {
+    if (letra === "Ñ") return "enie";
+    return letra.toLowerCase();
+}
+function letraImgHTML(letra) {
+    const desc = ALFABETO[letra] ? ALFABETO[letra][0] : "";
+    return `<img src="assets/letras/${letraArchivo(letra)}.jpg" alt="Letra ${letra} en Lengua de Señas Mexicana: ${esc(desc)}" loading="lazy" width="360" height="300" onerror="this.remove()">`;
+}
 function deletrear(){
     const txt=$("#nombre").value.toUpperCase().normalize("NFC");
     const out=[];
@@ -784,9 +982,45 @@ function deletrear(){
         let c=txt[i];
         if((c==="L"||c==="R")&&txt[i+1]===c){c=c+c;i++;}
         else if(c!=="Ñ") c=c.normalize("NFD").replace(/[̀-ͯ]/g,"");
-        if(ALFABETO[c]) out.push(`<div class="letter"><b>${c}</b><span>${ALFABETO[c][0]}</span>${ALFABETO[c][1]?'<br><span class="mov">movimiento</span>':''}</div>`);
+        if(ALFABETO[c]) out.push(`<div class="letter">${letraImgHTML(c)}<b>${c}</b><span>${ALFABETO[c][0]}</span>${ALFABETO[c][1]?'<br><span class="mov">movimiento</span>':''}</div>`);
     }
     $("#spell").innerHTML=out.join("");
+}
+
+/* ===== ABECEDARIO ===== */
+const ABC_ORDER = ["A","B","C","D","E","F","G","H","I","J","K","L","LL","M","N","Ñ","O","P","Q","R","RR","S","T","U","V","W","X","Y","Z"];
+function renderAbecedario() {
+    const html = ABC_ORDER.map(l => {
+        const mov = ALFABETO[l] && ALFABETO[l][1];
+        return `<button type="button" class="abc-cell" data-letter="${l}" role="listitem" aria-label="Letra ${l}${mov?' (con movimiento)':''}">
+            ${letraImgHTML(l)}
+            <span class="abc-letter">${l}</span>
+            ${mov?'<span class="abc-mov">movimiento</span>':''}
+        </button>`;
+    }).join("");
+    $("#abecedario").innerHTML = html;
+}
+
+/* ===== MODAL / LIGHTBOX ===== */
+const modal = () => $("#modal");
+function openLetterModal(letra) {
+    if (!ALFABETO[letra]) return;
+    $("#modal-img").src = `assets/letras/${letraArchivo(letra)}.jpg`;
+    $("#modal-img").alt = `Letra ${letra} en Lengua de Señas Mexicana`;
+    $("#modal-img").onerror = function(){ this.style.display='none'; };
+    $("#modal-img").style.display = "block";
+    $("#modal-letter").textContent = letra;
+    $("#modal-desc").textContent = ALFABETO[letra][0];
+    $("#modal-mov").hidden = !ALFABETO[letra][1];
+    modal().hidden = false;
+    requestAnimationFrame(() => modal().classList.add("open"));
+    document.body.style.overflow = "hidden";
+    $("#modal-close").focus();
+}
+function closeLetterModal() {
+    modal().classList.remove("open");
+    setTimeout(() => { modal().hidden = true; }, 250);
+    document.body.style.overflow = "";
 }
 function senaDelDia(){
     const pool=SENAS.filter(s=>s.t==="Una mano"&&!s.rnm);
@@ -796,6 +1030,8 @@ function senaDelDia(){
     $("#dia-desc").textContent=[s.cm&&"Forma: "+s.cm, s.or, s.ub, s.mv].filter(Boolean).join(" · ");
 }
 async function init(){
+    renderAbecedario();
+    $("#abc-report").href = mailto("");
     try{ SENAS = window.SENAS_DATA || await (await fetch(DATA_URL)).json(); }
     catch(e){ $("#grid").innerHTML='<div class="empty">No se pudieron cargar las señas.</div>'; return; }
     if(SENAS.some(s=>s.mx)) $("#chip-mx").hidden=false;
@@ -810,6 +1046,25 @@ $("#chips").addEventListener("click",e=>{
     const b=e.target.closest(".chip"); if(!b) return;
     document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));
     tag=b.dataset.tag; filtrar();
+});
+
+// Abecedario click -> modal
+$("#abecedario").addEventListener("click", e => {
+    const cell = e.target.closest(".abc-cell");
+    if (cell) openLetterModal(cell.dataset.letter);
+});
+// Modal: close on backdrop click, close button, Esc
+$("#modal").addEventListener("click", e => {
+    if (e.target === modal()) closeLetterModal();
+});
+$("#modal-close").addEventListener("click", closeLetterModal);
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !modal().hidden) closeLetterModal();
+});
+// Abecedario "Escríbenos" link -> use mailto for report
+$("#abc-report").addEventListener("click", e => {
+    e.preventDefault();
+    location.href = mailto("Error en ilustración de letra");
 });
 
 // Navbar scroll
