@@ -642,10 +642,17 @@
     }
 
     /* GLOSARIO */
+    .gl-subtitle {
+        font-size: 0.85rem; font-weight: 700;
+        color: var(--gray-medium);
+        letter-spacing: 1.5px; text-transform: uppercase;
+        margin: 28px 0 12px;
+    }
+    .gl-subtitle:first-of-type { margin-top: 22px; }
     .gl {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 14px; margin-top: 20px;
+        gap: 14px;
     }
     .gl div {
         background: var(--white);
@@ -666,6 +673,36 @@
         font-size: 0.98rem;
         display: block; margin-bottom: 6px;
     }
+    .gl-wide {
+        grid-column: 1 / -1;
+    }
+    .gl-list {
+        list-style: none;
+        margin-top: 6px;
+        display: grid;
+        gap: 4px;
+    }
+    .gl-list li {
+        font-size: 0.9rem;
+        color: var(--gray-dark);
+        padding: 2px 0;
+    }
+    .gl-list li b {
+        display: inline;
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--blue-primary);
+        font-weight: 700;
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    .gl-hint {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed rgba(21, 101, 192, 0.15);
+        font-size: 0.85rem;
+        color: var(--gray-medium);
+        font-style: italic;
+    }
     .gl code {
         background: var(--blue-pale);
         color: var(--blue-primary);
@@ -673,6 +710,94 @@
         border-radius: 4px;
         font-size: 0.85rem;
         font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    /* ABBR con tooltip */
+    abbr[title], .row abbr {
+        text-decoration: underline dotted rgba(21, 101, 192, 0.5);
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 3px;
+        cursor: help;
+        position: relative;
+        color: var(--blue-primary);
+        font-weight: 600;
+    }
+    .abbr-tip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        background: var(--blue-dark);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        white-space: nowrap;
+        max-width: min(260px, 80vw);
+        white-space: normal;
+        line-height: 1.4;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 100;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.2s, transform 0.2s;
+    }
+    .abbr-tip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: var(--blue-dark);
+    }
+    .abbr-tip.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* Código gris y variante */
+    .cm-friendly { color: var(--gray-dark); }
+    .cm-code {
+        color: var(--gray-medium);
+        font-size: 0.85rem;
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        margin-left: 4px;
+    }
+    .cm-variant {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 0.78rem;
+        color: var(--gray-medium);
+        font-style: italic;
+        background: var(--gray-soft);
+        padding: 2px 8px;
+        border-radius: 100px;
+        border: 1px dashed rgba(21, 101, 192, 0.2);
+    }
+
+    /* Link al glosario dentro de ficha */
+    .body .to-glossary {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        font-size: 0.82rem;
+        color: var(--blue-primary);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 6px 10px;
+        border-radius: 100px;
+        background: var(--blue-pale);
+        align-self: flex-start;
+        justify-self: start;
+        width: fit-content;
+        transition: all 0.2s;
+    }
+    .body .to-glossary:hover {
+        background: var(--blue-primary);
+        color: white;
     }
 
     .btn {
@@ -855,14 +980,48 @@
 
 <section class="block container" id="como-leer">
     <h2>Cómo leer una seña</h2>
-    <p class="lede">Cada seña se describe con los mismos parámetros que usan los lingüistas de la LSM, y que también mide el guante MaiVox.</p>
+    <p class="lede">Cada seña se describe con los mismos parámetros que usan los lingüistas de la LSM, y que también mide el guante MaiVox. Aquí abajo, el diccionario para entender la notación.</p>
+
+    <div class="gl-subtitle">Tipos de seña</div>
     <div class="gl">
-        <div><b>Forma de la mano</b>Cómo están los dedos: plana (B), puño (A, S), en L, abierta (5), en C o en O. Los códigos como <code>A.1</code> son variantes de cada forma.</div>
-        <div><b>Orientación</b>Hacia dónde mira la palma: arriba, abajo, afuera, adentro, a la izquierda o a la derecha.</div>
-        <div><b>Ubicación</b>Dónde se hace la seña: frente a la cara, el pecho, la cintura, el hombro…</div>
-        <div><b>Movimiento</b>Recto, en arco, circular, agitado, repetido, o sin movimiento.</div>
-        <div><b>Rasgos no manuales</b>Gestos de la cara y el cuerpo que forman parte de la seña. ¡En LSM la cara también habla!</div>
-        <div><b>MD / MB</b>Mano dominante y mano base (la que sirve de apoyo en señas de dos manos).</div>
+        <div><b>SM · Seña monomanual</b>Se hace con una sola mano.</div>
+        <div><b>SB · Seña bimanual</b>La mano dominante se mueve sobre o cerca de la otra mano, que funciona como apoyo y casi no se mueve.</div>
+        <div><b>SS · Seña simétrica</b>Las dos manos tienen la misma forma y se mueven igual, al mismo tiempo o alternadas.</div>
+        <div><b>SC · Seña compuesta</b>Dos o más señas seguidas que forman una sola palabra. <code>I.</code> y <code>II.</code> marcan cada parte.</div>
+    </div>
+
+    <div class="gl-subtitle">Las manos</div>
+    <div class="gl">
+        <div><b>MD · Mano dominante</b>La que hace el movimiento principal. Si eres diestro es la derecha; si eres zurdo, la izquierda.</div>
+        <div><b>MB · Mano base</b>La que sirve de apoyo en las señas de dos manos.</div>
+    </div>
+
+    <div class="gl-subtitle">Forma de la mano (configuración)</div>
+    <div class="gl">
+        <div class="gl-wide">
+            <b>Cómo leer los códigos</b>
+            Los códigos como <code>A.4</code> o <code>B-P.2</code> tienen dos partes: la <strong>forma base</strong> (A) y su <strong>variante</strong> (4), que son pequeñas diferencias en cómo se doblan o colocan los dedos. La frase <em>"Seña que pasa de C.1 a O.1"</em> significa que la mano cambia de forma durante la seña.
+            <ul class="gl-list" aria-label="Formas base más comunes">
+                <li><b>B-P</b> (B-Palma): mano plana, dedos juntos</li>
+                <li><b>A</b>: puño con el pulgar al lado</li>
+                <li><b>S</b>: puño cerrado, pulgar sobre los dedos</li>
+                <li><b>L</b>: índice arriba y pulgar al lado</li>
+                <li><b>5</b> (5-Garra): mano abierta, dedos separados</li>
+                <li><b>C</b>: mano curva en forma de C</li>
+                <li><b>O</b>: puntas de los dedos juntas formando un círculo</li>
+                <li><b>1</b>: índice extendido</li>
+                <li><b>2</b>: índice y medio extendidos</li>
+                <li><b>4</b>: cuatro dedos extendidos, pulgar doblado</li>
+            </ul>
+            <div class="gl-hint">Las variantes (el número después del punto) son diferencias finas en la posición de los dedos. Estamos preparando una tabla con imágenes de cada una; mientras tanto, guíate por la forma base.</div>
+        </div>
+    </div>
+
+    <div class="gl-subtitle">Dirección y lugar</div>
+    <div class="gl">
+        <div><b>Izquierda y derecha</b>Siempre son desde el punto de vista de quien hace la seña, no de quien la mira.</div>
+        <div><b>Hacia adentro / hacia afuera</b><em>"Hacia adentro"</em> es hacia el cuerpo de quien seña; <em>"hacia afuera"</em> es hacia la persona que mira.</div>
+        <div><b>Rasgos no manuales</b>Gestos de la cara y el cuerpo (cejas, boca, cabeza) que forman parte de la seña.</div>
     </div>
 </section>
 
@@ -930,14 +1089,74 @@ const norm = s => (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").
 const esc = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let SENAS=[], filtradas=[], mostradas=0, tag="";
 
+/* ===== Notación técnica ===== */
+const ABREV = {
+    "MD": "Mano dominante (la que hace el movimiento principal)",
+    "MB": "Mano base (la que sirve de apoyo)",
+    "SM": "Seña monomanual (se hace con una sola mano)",
+    "SB": "Seña bimanual (una mano se mueve, la otra es apoyo)",
+    "SS": "Seña simétrica (las dos manos hacen lo mismo)",
+    "SC": "Seña compuesta (dos o más señas seguidas)"
+};
+const FORMAS_SIMPLES = {
+    "B-P": "Mano plana, dedos juntos",
+    "A":   "Puño con el pulgar al lado",
+    "S":   "Puño cerrado, pulgar sobre los dedos",
+    "L":   "Índice arriba y pulgar al lado",
+    "5":   "Mano abierta, dedos separados",
+    "5-G": "Mano abierta, dedos separados",
+    "C":   "Mano curva en forma de C",
+    "O":   "Puntas de los dedos juntas formando un círculo",
+    "1":   "Índice extendido",
+    "2":   "Índice y medio extendidos",
+    "4":   "Cuatro dedos extendidos, pulgar doblado"
+};
+// Traduce el código de configuración a lenguaje sencillo si la forma base está en la lista.
+// Fácil de ampliar: añade entradas en FORMAS_SIMPLES.
+function formaAmigable(codigo) {
+    if (!codigo) return null;
+    if (/pasa\s+(de|a)\s/i.test(codigo)) return null;
+    const stripped = codigo.trim().replace(/^(MD y MB|MD|MB)\s+/, '');
+    const m = stripped.match(/^([A-Z0-9-]+(?:-[A-Z])?)(?:\.[0-9A-Z.]+)?/);
+    if (!m) return null;
+    return FORMAS_SIMPLES[m[1]] || null;
+}
+// Envuelve MD, MB, SM, SB, SS, SC como <abbr> con tooltip (aria + hover + tap móvil).
+// Recibe texto YA escapado (con esc()).
+function anotarAbrev(textoEscapado) {
+    return textoEscapado.replace(/\b(MD|MB|SM|SB|SS|SC)\b/g, (m) => {
+        const t = ABREV[m] || m;
+        return `<abbr title="${t}" tabindex="0">${m}</abbr>`;
+    });
+}
+function renderForma(cm) {
+    if (!cm) return "";
+    const amigable = formaAmigable(cm);
+    const codigo = anotarAbrev(esc(cm));
+    const variant = `<span class="cm-variant">variante: imagen próximamente</span>`;
+    if (amigable) {
+        return `<span class="cm-friendly">${amigable}</span><span class="cm-code">· ${codigo}</span> ${variant}`;
+    }
+    return `${codigo} ${variant}`;
+}
+
 function card(s){
-    const rows=[["Tipo",s.t],["Forma de mano",s.cm],["Orientación",s.or],["Ubicación",s.ub],["Movimiento",s.mv],["Cara y cuerpo",s.rnm]]
-        .filter(r=>r[1]).map(r=>`<div class="row"><b>${r[0]}</b><span>${esc(r[1])}</span></div>`).join("");
+    const rows=[
+        ["Tipo", s.t],
+        ["Forma de mano", s.cm, "forma"],
+        ["Orientación", s.or],
+        ["Ubicación", s.ub],
+        ["Movimiento", s.mv],
+        ["Cara y cuerpo", s.rnm]
+    ].filter(r => r[1]).map(r => {
+        const value = r[2] === "forma" ? renderForma(r[1]) : anotarAbrev(esc(r[1]));
+        return `<div class="row"><b>${r[0]}</b><span>${value}</span></div>`;
+    }).join("");
     const img = s.img ? `<img src="${esc(s.img)}" alt="Seña de ${esc(s.p)}" style="max-width:100%;border-radius:10px">`
                       : `<div class="img-slot">📷 Imagen en camino. ¿Tienes una? <a href="${mailto(s.p)}">Envíanosla</a></div>`;
     return `<details class="sena"><summary><div><div class="name">${esc(s.p)}</div><div class="type">${esc(s.t)}</div></div>
         <span class="gtag ${s.mx?'mx':''}">${s.mx?'🧤 MaiVox':GRUPOS[s.g]||s.g}</span></summary>
-        <div class="body">${rows}${img}</div></details>`;
+        <div class="body">${rows}${img}<a class="to-glossary" href="#como-leer"><i class="fas fa-book-open"></i> ¿Qué significa esto?</a></div></details>`;
 }
 function filtrar(){
     const q=norm($("#q").value.trim()), g=$("#grupo").value;
@@ -1065,6 +1284,28 @@ document.addEventListener("keydown", e => {
 $("#abc-report").addEventListener("click", e => {
     e.preventDefault();
     location.href = mailto("Error en ilustración de letra");
+});
+
+/* ===== Tooltip para <abbr> (móvil sin hover) ===== */
+let _activeTip = null;
+function clearTip() {
+    if (_activeTip) { _activeTip.remove(); _activeTip = null; }
+}
+document.addEventListener("click", e => {
+    const ab = e.target.closest("abbr[title]");
+    if (!ab) { clearTip(); return; }
+    if (_activeTip && _activeTip.parentNode === ab) { clearTip(); return; }
+    clearTip();
+    const tip = document.createElement("span");
+    tip.className = "abbr-tip";
+    tip.textContent = ab.getAttribute("title");
+    ab.appendChild(tip);
+    requestAnimationFrame(() => tip.classList.add("show"));
+    _activeTip = tip;
+    e.stopPropagation();
+});
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") clearTip();
 });
 
 // Navbar scroll
