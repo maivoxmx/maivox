@@ -562,6 +562,40 @@
             color: var(--gray-medium);
         }
 
+        .band-preview { margin-top: 24px; }
+        .band-preview-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--gray-dark);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .band-preview-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border: 1px solid var(--blue-primary);
+            border-radius: 12px;
+            color: var(--blue-primary);
+            background: var(--white);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .band-preview-link:hover { background: var(--blue-pale); }
+        .band-preview-link:focus-visible {
+            outline: 3px solid var(--blue-primary);
+            outline-offset: 4px;
+        }
+        .band-preview-note {
+            margin-top: 10px;
+            color: var(--gray-dark);
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
         .products-note {
             text-align: center;
             margin-top: 48px;
@@ -1490,6 +1524,14 @@
                         <li><i class="fas fa-check"></i> Detección de emergencias</li>
                         <li><i class="fas fa-check"></i> Sin dependencia del celular</li>
                     </ul>
+                    <div class="band-preview">
+                        <span class="band-preview-label">Acceso restringido</span>
+                        <a class="band-preview-link" href="./band/" aria-describedby="band-preview-note">
+                            <i class="fas fa-lock" aria-hidden="true"></i>
+                            Explorar la MaiVox Band en 3D
+                        </a>
+                        <p class="band-preview-note" id="band-preview-note">Visualización conceptual interactiva. Solicita acceso al equipo MaiVox.</p>
+                    </div>
                 </div>
             </div>
 
